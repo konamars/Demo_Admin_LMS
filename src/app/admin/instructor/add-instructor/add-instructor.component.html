@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-center">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="align-items-center">
+        <div class="p-2">
+          <h6 class="mb-0">Add Instructor</h6>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="addInstructor" (ngSubmit)="isEdit ? edit() : add()">
+        <mat-form-field appearance="standard" style="width: 100%">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" (keypress)="disableWhiteSpace($event)">
+        </mat-form-field>
+        <mat-form-field appearance="standard" style="width: 100%">
+          <mat-label>Email Address</mat-label>
+          <input matInput formControlName="email" (keypress)="disableWhiteSpace($event)">
+          <mat-error *ngIf="addInstructor.controls.email.hasError('notValid')">
+            Email already
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="standard" style="width: 100%" *ngIf="!isEdit">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password">
+        </mat-form-field>
+        <div class="text-right mt-4">
+          <button class="btn btn-md btn-primary" *ngIf="!isEdit else editButton" type="submit">Save</button>
+          <ng-template #editButton>
+            <button class="btn btn-md btn-primary" type="submit">Edit</button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

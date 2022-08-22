@@ -1,0 +1,21 @@
+.card {
+    width: 60%;
+    box-shadow: 0 0 2rem 0 rgba(136,152,170,.15)!important;
+    margin-bottom: 30px;
+    background-color: #f7fafc!important;
+    &-header {
+      border-radius: calc(.375rem - 1px) calc(.375rem - 1px) 0 0;
+    }
+    &-body {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding: 10px 6%;
+    }
+  }
+  button {
+    &:focus {
+      box-shadow: none;
+      outline: none;
+    }
+  }

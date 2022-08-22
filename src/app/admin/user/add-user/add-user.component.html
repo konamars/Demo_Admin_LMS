@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+    <div class="card bg-secondary shadow">
+      <div class="card-header bg-white border-0">
+        <div class="align-items-center">
+          <div class="p-2">
+            <h6 class="mb-0">Add User</h6>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="addUser" (ngSubmit)="isEdit ? edit() : add()">
+          <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>First Name</mat-label>
+            <input matInput formControlName="firstname" (blur)="trim('firstname')">
+          </mat-form-field>
+          <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>Last Name</mat-label>
+            <input matInput formControlName="lastname" (blur)="trim('lastname')">
+          </mat-form-field>
+          <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>Email Address</mat-label>
+            <input matInput formControlName="email" [readonly]="isEdit" (keypress)="disableWhiteSpace($event)">
+            <mat-error *ngIf="addUser.controls.email.hasError('notValid')">
+              Email already exists
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>Mobile No</mat-label>
+            <input matInput formControlName="phone" (keypress)="disableWhiteSpace($event)">
+            <mat-error *ngIf="addUser.controls.phone.hasError('phoneExists')">
+              Mobile already exists
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="standard" style="width: 100%" *ngIf="!isEdit">
+            <mat-label>Password</mat-label>
+            <input type="password" matInput formControlName="password">
+            <mat-error *ngIf="addUser.controls.password.touched && addUser.controls.password.hasError('minlength')">
+              Password should be 8 characters
+            </mat-error>
+          </mat-form-field>          
+          <div class="text-right mt-4">
+            <button class="btn btn-md btn-primary" *ngIf="!isEdit else editButton" type="submit">Save</button>
+            <ng-template #editButton>
+              <button class="btn btn-md btn-primary" type="submit">Edit</button>
+            </ng-template>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,53 @@
+<div class="d-flex justify-content-center">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="align-items-center">
+        <div class="p-2">
+          <h6 class="mb-0">Add Assessment</h6>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="addAssessment" (ngSubmit)="isEdit ? edit() : add()" style="width: 100%">
+        <mat-form-field appearance="standard" style="width: 100%">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Assessment Name" formControlName="name">
+        </mat-form-field>
+        <ng-container formArrayName="assessment">
+          <button mat-raised-button type="button" (click)="addQuestion()">+ Add Question</button>
+          <ng-container *ngFor="let q of getControls('assessment'); let c = index">
+            <ng-container [formGroupName]="c">
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>Question</mat-label>
+                <input matInput formControlName="name">
+                <mat-icon color="accent" matSuffix (click)="removeQuestion(c)" style="cursor: pointer;">delete</mat-icon>
+              </mat-form-field>
+              <div formArrayName="options" style="margin-left: 20px">
+                <button mat-raised-button type="button" (click)="addOption(c)">+ Add Option</button>
+                <br>
+                <ng-container *ngFor="let option of q.controls.options.controls; let s = index">
+                  <div class="d-flex align-items-center" [formGroupName]="s">
+                    <mat-checkbox formControlName="isChecked" style="margin-right: 10px;">
+                    </mat-checkbox>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Option</mat-label>
+                      <input matInput formControlName="name">
+                      <mat-icon color="accent" matSuffix (click)="removeOption(c,s)" style="cursor: pointer;">delete</mat-icon>
+                    </mat-form-field>
+                  </div>
+                  <br>
+                </ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+        <div class="text-right mt-4">
+          <button class="btn btn-md btn-primary" *ngIf="!isEdit else editButton" type="submit">Save</button>
+          <ng-template #editButton>
+            <button class="btn btn-md btn-primary" type="submit">Save</button>
+          </ng-template>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

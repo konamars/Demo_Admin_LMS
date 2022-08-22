@@ -1,0 +1,25 @@
+<div class="modal-container">
+  <div class="login-modal">
+    <div class="branding">
+      <img alt="..." class="navbar-brand-img" src="assets/images/logo.png" style="width: 200px;">
+      <!-- <h5>Login with credentials</h5> -->
+    </div>
+    <form [formGroup]="login" (ngSubmit)="authenticate()">
+        <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>Username</mat-label>
+            <input matInput formControlName="username">
+            <mat-error *ngIf="login.get('username').hasError('notMatched')">
+                Username incorrect
+              </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="standard" style="width: 100%">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password">
+            <mat-error *ngIf="login.get('password').hasError('notMatched')">
+              Password incorrect
+            </mat-error>
+          </mat-form-field>
+          <button type="submit" class="btn btn-block">login</button>
+    </form>
+  </div>
+</div>

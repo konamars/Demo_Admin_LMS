@@ -1,0 +1,376 @@
+<div class="card bg-secondary shadow">
+  <div class="card-header bg-white border-0">
+    <div class="align-items-center">
+      <div class="p-2">
+        <h6 class="mb-0">Course Batch detail</h6>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <mat-tab-group>
+      <mat-tab label="Edit Batch Curriculum">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-body">
+            <div class="d-flex">
+              <app-add-batch (triggerBatch) = "getBatch($event)"></app-add-batch>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Resources">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-header">
+            <h5>Add Resources</h5>
+          </div>
+          <div class="tab-body">
+            <div class="d-flex">
+              <mat-form-field appearance="standard" style="width: 48%; margin-right: 4%">
+                <mat-label>Module Name</mat-label>
+                <mat-select [(ngModel)]="curriculumModule" (selectionChange)="changeCurriculumModule($event)">
+                  <mat-option [value]="c" *ngFor="let c of course['curriculum']">
+                    {{ c['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 48%" *ngIf="topics  && topics.length">
+                <mat-label>Topic name</mat-label>
+                <mat-select (selectionChange)="changeTopic($event)">
+                  <mat-option [value]="t" *ngFor="let t of topics">
+                    {{ t['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="topic">      
+              <button mat-raised-button color="primary" class="mb-3" (click)="addResource()">+ Add Resource</button>        
+              <ng-container>
+                <div *ngFor="let resource of resources" class="border-bottom">
+                  <div class="d-flex justify-content-end">
+                    <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="resource['isEdit']" (click)="saveResource(resource)">save</mat-icon>
+                    <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="!resource['isEdit']" (click)="resource['isEdit'] = true">edit</mat-icon>
+                    <mat-icon style="font-size: 16px; cursor: pointer;padding-left: 10px;" color="accent" *ngIf="!resource['isEdit']" (click)="saveResource(resource, true)">delete</mat-icon>
+                  </div>
+                  <ng-container *ngIf="!resource['isEdit']">
+                    <p>
+                      <span style="color: #666; margin-right: 20px">File Title:</span>
+                      <a>{{ resource['fileTitle'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666;margin-right: 20px;">File Link:</span>
+                      <a>{{ resource['fileLink'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666; margin-right: 20px">Reference Title:</span>
+                      <a>{{ resource['referenceTitle'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666;margin-right: 20px;">Reference Link:</span>
+                      <a>{{ resource['referenceLink'] }}</a>
+                    </p>
+                  </ng-container>
+                  <ng-container *ngIf="resource['isEdit']">
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>File Title</mat-label>
+                      <input matInput [(ngModel)]="resource['fileTitle']">
+                    </mat-form-field>
+                    <label style="padding-right: 10px;">File: </label>
+                    <!-- <button mat-raised-button color="primary" (click)="fileInput.click()">Choose File</button> -->
+                    <input (change)="getSelected($event)" #fileInput type="file" id="file">
+                    <p *ngIf="resource['fileLink']">Existing File: {{ resource['fileLink'] }}</p>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Reference Title</mat-label>
+                      <input matInput [(ngModel)]="resource['referenceTitle']">
+                    </mat-form-field>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Reference Link</mat-label>
+                      <input matInput [(ngModel)]="resource['referenceLink']">
+                    </mat-form-field>
+                  </ng-container>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Assignments">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-header">
+            <h5>Add Assignments</h5>
+          </div>
+          <div class="tab-body">
+            <div class="d-flex">
+              <mat-form-field appearance="standard" style="width: 48%; margin-right: 4%">
+                <mat-label>Module Name</mat-label>
+                <mat-select [(ngModel)]="curriculumModule" (selectionChange)="changeCurriculumModule($event)">
+                  <mat-option [value]="c" *ngFor="let c of course['curriculum']">
+                    {{ c['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 48%" *ngIf="topics  && topics.length">
+                <mat-label>Topic name</mat-label>
+                <mat-select (selectionChange)="changeTopic($event)">
+                  <mat-option [value]="t" *ngFor="let t of topics">
+                    {{ t['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="topic">      
+              <button mat-raised-button color="primary" class="mb-3" (click)="addAssignment()">+ Add Assignment</button>        
+              <ng-container>
+                <div *ngFor="let assignment of assignments" class="border-bottom">
+                  <div class="d-flex justify-content-end">
+                    <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="assignment['isEdit']" (click)="saveAssignment(assignment)">save</mat-icon>
+                    <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="!assignment['isEdit']" (click)="assignment['isEdit'] = true">edit</mat-icon>
+                    <mat-icon style="font-size: 16px; cursor: pointer;padding-left: 10px;" color="accent" *ngIf="!assignment['isEdit']" (click)="saveAssignment(assignment, true)">delete</mat-icon>
+                  </div>
+                  <ng-container *ngIf="!assignment['isEdit']">
+                    <p>
+                      <span style="color: #666; margin-right: 20px">Title:</span>
+                      <a>{{ assignment['title'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666; margin-right: 20px">Submit On:</span>
+                      <a>{{ assignment['submitOn'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666; margin-right: 20px">Instructions:</span>
+                      <a>{{ assignment['instructions'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666; margin-right: 20px">Instructor Mail Id:</span>
+                      <a>{{ assignment['instructorMailId'] }}</a>
+                    </p>
+                    <p>
+                      <span style="color: #666;margin-right: 20px;">Solution File:</span>
+                      <a>{{ assignment['solution']['fileLink'] }}</a>
+                    </p>                    
+                  </ng-container>
+                  <ng-container *ngIf="assignment['isEdit']">
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Assignment Title</mat-label>
+                      <input matInput [(ngModel)]="assignment['title']" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Submit On</mat-label>
+                      <input type="datetime-local" required matInput [(ngModel)]="assignment['submitOn']">
+                    </mat-form-field>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Instructions</mat-label>
+                      <input matInput [(ngModel)]="assignment['instructions']" required>
+                    </mat-form-field>
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Instructor Mail Id</mat-label>
+                      <input matInput [(ngModel)]="assignment['instructorMailId']" required>
+                    </mat-form-field>
+                    <label style="padding-right: 10px;">Attach File: </label>
+                    <!-- <button mat-raised-button color="primary" (click)="fileInput.click()">Choose File</button> -->
+                    <input (change)="getSelected($event)" required #fileInput type="file" id="file">    
+                    <p *ngIf="assignment['solution']['fileLink']">Existing File: {{assignment['solution']['fileLink']}}</p>                
+                  </ng-container>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-tab>    
+      <mat-tab label="Projects">
+        <div class="tab-content" *ngIf="course">
+          <button mat-raised-button color="primary" class="mb-3" (click)="addProject()">+ Add Project</button>
+          <div *ngFor="let r of course['projects']; let i = index" class="mt-2">
+            <div class="tab-header d-flex justify-content-between align-items-center">
+              <h5></h5>
+              <div class="d-flex align-items-end" *ngIf="!r['isEdit']">
+                <mat-icon color="primary" style="font-size: 16px; border-right: 1px solid #666; width: 27px; cursor: pointer;" (click)="r['isEdit']=true">edit</mat-icon>
+                <mat-icon style="font-size: 16px; cursor: pointer;padding-left: 10px;" color="accent" (click)="deleteProject(r, i)">delete</mat-icon>
+              </div>
+              <div class="d-flex align-items-end" *ngIf="r['isEdit']">
+                <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="r['isEdit']" (click)="saveProject(r)">save</mat-icon>
+              </div>
+            </div>
+            <div class="tab-body ml-3 mt-2">
+              <ng-container *ngIf="!r['isEdit']">
+                <p>
+                  <span style="color: #666; margin-right: 20px">Title:</span>
+                  <a>{{ r['title'] }}</a>
+                </p>
+                <p>
+                  <span style="color: #666;margin-right: 20px;">Description:</span>
+                  <a>{{ r['description'] }}</a>
+                </p>
+                <p>
+                  <span style="color: #666;margin-right: 20px;">Project File:</span>
+                  <a>{{ r['projectLink'] }}</a>
+                </p>
+              </ng-container>
+              <ng-container *ngIf="r['isEdit']">
+                <mat-form-field appearance="standard" style="width: 100%">
+                  <mat-label>Title</mat-label>
+                  <input matInput [(ngModel)]="r['title']">
+                </mat-form-field>
+                <mat-form-field appearance="standard" style="width: 100%">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput [(ngModel)]="r['description']"></textarea>
+                </mat-form-field>
+                  <label style="padding-right: 10px;">Project File: </label>
+                  <!-- <button mat-raised-button color="primary" (click)="fileInput.click()">Choose File</button> -->
+                  <input [(ngModel)]="r['projectFile']" (change)="getSelected($event)" #fileInput type="file" id="file">
+                  <p *ngIf="r['projectLink']">Existing File: {{r['projectLink']}}</p>                
+                </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Live Class">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-header d-flex justify-content-between align-items-center">
+            <h5>Add Live Class Link</h5>
+            <div class="d-flex align-items-center" *ngIf="!course['isLiveClassEdit']">
+              <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" (click)="course['isLiveClassEdit']=true">edit</mat-icon>
+            </div>
+            <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="course['isLiveClassEdit']" (click)="[course['isLiveClassEdit']=false, updateCourse()]">save</mat-icon>
+          </div>
+          <div class="tab-body ml-3 mt-2">
+            <ng-container *ngIf="!course['isLiveClassEdit']">
+              <p>
+                <span style="color: #666; margin-right: 20px">Live class date:</span>
+                <a>{{ course['upcomingClassDate'] | date: 'dd MMM yyyy hh:mm a' }}</a>
+              </p>
+              <p>
+                <span style="color: #666;margin-right: 20px;">Live class Link:</span>
+                <a href="{{ course['upcomingClassZoomLink'] }}">{{ course['upcomingClassZoomLink'] }}</a>
+              </p>
+            </ng-container>
+            <ng-container *ngIf="course['isLiveClassEdit']">
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>Live class date</mat-label>
+                <input matInput type="datetime-local" [(ngModel)]="course['upcomingClassDate']">
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>Live class Link</mat-label>
+                <input matInput [(ngModel)]="course['upcomingClassZoomLink']">
+              </mat-form-field>
+            </ng-container>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Recorded videos">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-header">
+            <h5>Add recorded videos</h5>
+          </div>
+          <div class="tab-body">
+            <div class="d-flex">
+              <mat-form-field appearance="standard" style="width: 48%; margin-right: 4%">
+                <mat-label>Module Name</mat-label>
+                <mat-select [(ngModel)]="curriculumModule" (selectionChange)="changeCurriculumModule($event)">
+                  <mat-option [value]="c" *ngFor="let c of course['curriculum']">
+                    {{ c['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 48%" *ngIf="topics  && topics.length">
+                <mat-label>Topic name</mat-label>
+                <mat-select (selectionChange)="changeTopic($event)">
+                  <mat-option [value]="t" *ngFor="let t of topics">
+                    {{ t['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div *ngIf="topic">
+              <div class="d-flex justify-content-end">
+                <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="topic['isEdit']" (click)="addRecorded(topic)">save</mat-icon>
+                <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" *ngIf="!topic['isEdit']" (click)="topic['isEdit'] = true">edit</mat-icon>
+              </div>
+              <ng-container>
+                <ng-container *ngIf="!topic['isEdit']">
+                  <p>
+                    <span style="color: #666; margin-right: 20px">Recorded video link:</span>
+                    <a>{{ topic['link'] }}</a>
+                  </p>
+                  <p>
+                    <span style="color: #666;margin-right: 20px;">Recorded video id:</span>
+                    <a>{{ topic['video_id'] }}</a>
+                  </p>
+                </ng-container>
+                <ng-container *ngIf="topic['isEdit']">
+                  <mat-form-field appearance="standard" style="width: 100%">
+                    <mat-label>Recorded video link</mat-label>
+                    <input matInput [(ngModel)]="topic['link']">
+                  </mat-form-field>
+                  <mat-form-field appearance="standard" style="width: 100%">
+                    <mat-label>Recorded video id</mat-label>
+                    <input matInput [(ngModel)]="topic['video_id']">
+                  </mat-form-field>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Assessments">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-header">
+            <div class="mt-4 d-flex justify-content-start" *ngIf="course">
+              <h5>Add/Edit/Delete Assessment link</h5>
+            </div>
+            <!-- <div class="mb-4 d-flex justify-content-end" *ngIf="topics  && topics.length">
+              <button mat-raised-button color="primary" class="justify-content-end" (click)="updateCourse()">Add Topic</button>
+            </div> -->
+          </div>
+          <div class="tab-body">
+            <div class="d-flex">
+              <mat-form-field appearance="standard" style="width: 48%; margin-right: 4%">
+                <mat-label>Module Name</mat-label>
+                <mat-select [(ngModel)]="curriculumModule" (selectionChange)="changeCurriculumModule($event)">
+                  <mat-option [value]="c" *ngFor="let c of course['curriculum']">
+                    {{ c['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 48%" *ngIf="topics  && topics.length">
+                <mat-label>Topic name</mat-label>
+                <mat-select (selectionChange)="changeAssessment($event)">
+                  <mat-option [value]="t" *ngFor="let t of topics">
+                    {{ t['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <ng-container *ngIf="assessmentTopic">
+              <div>
+                <div class="d-flex justify-content-end">
+                  <mat-icon color="primary" style="font-size: 18px; width: 27px; cursor: pointer;" (click)="addAssessment()">save</mat-icon>
+                  <mat-icon style="font-size: 16px; cursor: pointer;padding-left: 10px;" *ngIf="selectedAssessment" color="accent" (click)="deleteAssessment(selectedAssessment)">delete</mat-icon>
+                </div>
+                  <mat-form-field appearance="standard" style="width: 48%; margin-right: 4%">
+                    <mat-label>Assessment Name</mat-label>
+                    <mat-select [(ngModel)]="selectedAssessment">
+                      <mat-option *ngFor="let ase of assessments" [value]="ase">
+                        {{ ase['name'] }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </mat-tab>
+      <mat-tab label="Feedbacks">
+        <div class="tab-content" *ngIf="course">
+          <div class="tab-body">
+            <div class="d-flex">
+              <app-all-feedback [batchId] = "batchId" style="width: 100%;"></app-all-feedback>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+    <div class="mt-4 mb-4 d-flex justify-content-end">
+      <!-- <button mat-raised-button color="primary" (click)="updateCourse()">Update</button> -->
+    </div>
+  </div>
+
+</div>

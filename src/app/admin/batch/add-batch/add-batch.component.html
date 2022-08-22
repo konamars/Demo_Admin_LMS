@@ -1,0 +1,83 @@
+<div class="d-flex justify-content-center">
+  <div class="card bg-secondary shadow">
+    <div class="card-header bg-white border-0">
+      <div class="align-items-center">
+        <div class="p-2">
+          <h6 class="mb-0">Edit Batch Curriculum</h6>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="addCourse" style="width: 100%">
+        <!-- <ng-container formGroupName="basic" *ngIf="step1">
+            <mat-form-field appearance="standard" style="width: 100%">
+              <mat-label>Title</mat-label>
+              <input matInput formControlName="title">
+            </mat-form-field>
+            <mat-form-field appearance="standard" style="width: 100%">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="mainDescription"></textarea>
+            </mat-form-field>
+            <mat-form-field appearance="standard" style="width: 100%">
+              <mat-label>Image URL</mat-label>
+              <input matInput formControlName="imageURL">
+            </mat-form-field>
+            <mat-form-field appearance="standard" style="width: 100%">
+              <mat-label>Price</mat-label>
+              <input matInput formControlName="price" type="number">
+            </mat-form-field>
+            <button mat-raised-button type="button" (click)="addFeature()">+ Add Feature</button>
+            <br>
+            <ng-container>
+              <ng-container *ngFor="let feature of addCourse.controls.basic.controls.features.controls; let f = index">
+                <mat-form-field appearance="standard" style="width: 100%">
+                  <mat-label>Feature</mat-label>
+                  <input matInput [formControl]="addCourse.controls.basic.controls.features.controls[f]">
+                  <mat-icon color="accent" matSuffix (click)="removeFeature(f)" style="cursor: pointer;">delete</mat-icon>
+                </mat-form-field>
+              </ng-container>
+            </ng-container>
+            <div class="text-right mt-4">
+              <button class="btn btn-md btn-primary" type="button" (click)="nextStep('basic', 1)">Next</button>
+            </div>
+          </ng-container> -->
+        <ng-container formArrayName="curriculum" *ngIf="step1">
+          <button mat-raised-button type="button" (click)="addTopic()">+ Add Topic</button>
+          <ng-container *ngFor="let topic of addCourse.controls.curriculum.controls; let c = index">
+            <ng-container [formGroupName]="c">
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+                <mat-icon color="accent" matSuffix (click)="removeTopic(c)" style="cursor: pointer;">delete</mat-icon>
+                <mat-error *ngIf="getTopicErrorStatus(c).hasError('required')">
+                  Field is required
+                </mat-error>
+              </mat-form-field>
+              <div formArrayName="topics" style="margin-left: 20px">
+                <button mat-raised-button type="button" class="mr-2" (click)="addSubTopic(c)" *ngIf="topic.showHideSubTopic != true">+ Add Sub Topic</button>
+                <button mat-raised-button type="button" (click)="addAssessment(c)">+ Add Assessment</button>
+                <ng-container *ngFor="let subTopic of topic.controls.topics.controls; let s = index">
+                  <ng-container [formGroupName]="s">
+                    <mat-form-field appearance="standard" style="width: 100%">
+                      <mat-label>Title</mat-label>
+                      <input matInput formControlName="title">
+                      <mat-error *ngIf="getSubTopicErrorStatus(c, s).hasError('required')">
+                        Field is required
+                      </mat-error>
+                      <mat-icon color="accent" matSuffix (click)="removeSubTopic(c,s)" style="cursor: pointer;">delete
+                      </mat-icon>
+                    </mat-form-field>
+                  </ng-container>
+                </ng-container>
+              </div>
+            </ng-container>
+          </ng-container>
+          <div class="mt-4 d-flex justify-content-end">
+            <!-- <button class="btn btn-md btn-secondary" type="button" (click)="[step1=false, step2=true]">Previous</button> -->
+            <button class="btn btn-md btn-primary" (click)="add()" [disabled]="addCourse.invalid">Save</button>
+          </div>
+        </ng-container>
+      </form>
+    </div>
+  </div>
+</div>

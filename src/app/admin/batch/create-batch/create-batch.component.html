@@ -1,0 +1,128 @@
+<div class="d-flex justify-content-center">
+    <div class="card bg-secondary shadow">
+      <div class="card-header bg-white border-0">
+        <div class="align-items-center">
+          <div class="p-2">
+            <h6 class="mb-0" [textContent]="isEdit ? 'Edit Batch' : 'Add Batch'"></h6>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="addBatch" (ngSubmit)="isEdit ? edit() : add()">
+              <mat-form-field appearance="standard" style="width: 100%;">
+                <mat-label>Course</mat-label>
+                <mat-select formControlName="courseId" (selectionChange)="getUsersBasedOnBatch($event.value)">
+                  <mat-option *ngFor="let c of courses" [value]="c['_id']">
+                    {{ c['title'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>              
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>Start Time</mat-label>              
+                <input type="time" matInput formControlName="startTime">
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 100%">
+                <mat-label>End Time</mat-label>
+                
+                <input type="time" matInput formControlName="endTime">
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 100%;">
+                <mat-label>Start Date</mat-label>
+                <input matInput [matDatepicker]="picker1" formControlName="startedDate">
+                <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                <mat-datepicker #picker1></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field appearance="standard" style="width: 100%;">
+                <mat-label>End Date</mat-label>
+                <input matInput [matDatepicker]="picker" formControlName="endDate" [min]="currentDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>              
+              <label>Status :</label> <br>
+              <mat-radio-group class="example-radio-group" formControlName="status">
+                <mat-radio-button style="margin-right: 10px;" class="example-radio-button" *ngFor="let status of statuses" [value]="status">
+                  {{ status }}
+                </mat-radio-button>
+                <br>
+              </mat-radio-group>
+              <mat-form-field appearance="standard" style="width: 100%;">
+                <mat-label>Instructor</mat-label>
+                <mat-select formControlName="instructorId">
+                  <mat-option *ngFor="let i of instructors" [value]="i['_id']">
+                    {{ i['username'] }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <div class="text-right mt-4 md-2">
+                <button class="btn btn-md btn-primary" (click)="showStudent=true" type="button" >+ Add Student</button>
+              </div>
+
+              <ng-container *ngIf="showStudent">
+                <mat-form-field appearance="standard" style="width: 100%">
+                  <input matInput placeholder="Select Student" [matAutocomplete]="auto"  (focus)="getStudents()" [formControl]="student">
+                  <mat-autocomplete #auto="matAutocomplete"   (optionSelected)="optionSelected($event)">
+                    <mat-option *ngFor="let student of studentsData " [value]="student">
+                      <span>{{student.firstname}} {{ student.lastname}} </span> |
+                      <small>Email: {{student.email}}</small>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+                
+                <div class="text-right mt-4 md-2">
+                  <button class="btn btn-md btn-secondary ml-4" type="button" (click)="showStudent=false" >Cancel</button>
+                  <button class="btn btn-md btn-success ml-4" type="button" (click)="addStudent()" >Add</button>
+                </div>
+              </ng-container>
+
+              <div class="table-responsive" style="width: 100%">
+                <mat-form-field style="width: 100%; padding: 0 20px;">
+                  <mat-label>Filter</mat-label>
+                  <input matInput (keyup)="applyFilter($event)">
+                </mat-form-field>
+            
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef style="color: #8898aa;
+                      background-color: #f6f9fc;"> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.firstname }} {{ element.lastname }} </td>
+                  </ng-container>
+            
+                  <ng-container matColumnDef="email">
+                    <th mat-header-cell *matHeaderCellDef style="color: #8898aa;
+                      background-color: #f6f9fc;"> Email </th>
+                    <td mat-cell *matCellDef="let element"> {{ element.email }} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="suspend">
+                    <th mat-header-cell *matHeaderCellDef style="color: #8898aa;
+                      background-color: #f6f9fc;"> Suspend User </th>
+                    <td mat-cell *matCellDef="let element" >
+                      <mat-slide-toggle *ngIf="!element['isNew']" [checked]="element['isSuspended']"
+                      (change)="suspendUser($event.checked, element)">
+                      </mat-slide-toggle>
+                    </td>
+                  </ng-container>
+            
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef style="color: #8898aa;
+                      background-color: #f6f9fc;"> Action </th>
+                    <td mat-cell *matCellDef="let element">
+                      <mat-icon color="primary" (click)="deleteProgress(element)" style="font-size: 16px; color: red; width: 27px; cursor: pointer;" (click)="deleteStudent(element)" >delete</mat-icon>
+                    </td>
+                  </ng-container>
+            
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" [hidden]="!total" [length]="total" (page)="getData($event)" showFirstLastButtons></mat-paginator>
+              </div>
+          <div class="text-right mt-4">
+            <button class="btn btn-md btn-primary" *ngIf="!isEdit else editButton" type="submit">Save</button>
+            <ng-template #editButton>
+              <button class="btn btn-md btn-primary" type="submit">Update</button>
+            </ng-template>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

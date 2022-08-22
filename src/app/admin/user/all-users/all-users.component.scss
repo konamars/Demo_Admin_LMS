@@ -1,0 +1,20 @@
+.card {
+  box-shadow: 0 0 2rem 0 rgba(136,152,170,.15)!important;
+  // background-color: #f7fafc!important;
+  .card-header {
+    padding: 20px;
+  }
+  .table-responsive {
+
+    table {
+      box-shadow: none;
+      width: 100%;
+      thead {
+        th {
+        color: #8898aa;
+        background-color: #f6f9fc;
+        }
+      }
+    }
+  }
+}
