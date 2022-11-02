@@ -5,7 +5,7 @@ pipeline {
         stage('Slack Notification') {
             steps {
                 script {
-                    slackSend channel: 'kona-lms', message: 'slackSend "started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<http://35.91.46.64:8080/job/frontend-lms/${env.BUILD_URL}|Open>)"', teamDomain: 'internship-2022-hq', tokenCredentialId: 'slack-lms'
+                    slackSend channel: ' sandeep-latest', message: 'slackSend "started ${env.JOB_NAME} ${env.BUILD_NUMBER} (<http://54.176.31.37:8080/job/sandeep-frontend/${env.BUILD_URL}|Open>)"', teamDomain: 'internship-2022-hq', tokenCredentialId: 'slack'
                 }
             }
         }
